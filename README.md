@@ -1,2 +1,2 @@
 # SNL-v-DS
-Comparison of starts to come out of the dail show versus Saturday Night Live
+Comparison of stars to come out of the daily show versus Saturday Night Live
