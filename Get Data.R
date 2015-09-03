@@ -7,12 +7,19 @@ library(XML)
 
 SNLurl <- "https://en.wikipedia.org/wiki/Saturday_Night_Live_cast_members"
 tabs_SNL <- getURL(SNLurl)
-tab_SNL <- readHTMLTable(tabs)
-sub_SNL <- tab[[2]]
-snl_actors <- as.character(sub[,1])
-snl_actors_years <- as.character(sub[,2])
+tab_SNL <- readHTMLTable(tabs_SNL)
+sub_SNL <- tab_SNL[[2]]
+SNL_actors <- as.character(sub_SNL[,1])
+## modifying year formats
+## need if charcter lenght is longer than 9 (4 years-4years) then pull first 4 characters and last four 
+## then use strsplit to separate into begin and end by -
+SNL_actors_years <- as.character(sub_SNL[,2])
 
-df_snl <- data.frame(Actor = snl_actor, Show = rep("SNL", length(snl_actors)), Years = snl_actors_years)
+df_SNL <- data.frame(Actor = SNL_actors, Show = rep("SNL", length(snl_actors)), 
+                     BegYear = , EndYear = )
+
+
+
 DSurl <- "https://en.wikipedia.org/wiki/List_of_The_Daily_Show_correspondents"
 tabs_DS <- getURL(DSurl)
 tab_DS <- readHTMLTable(tabs_DS)
@@ -27,10 +34,22 @@ DS_actors <- c(as.character(sub_DS1[,1]), as.character(sub_DS2[,1]),
 DS_actors_yearjoin <- c(as.character(sub_DS1[,2]), as.character(sub_DS2[,2]),
                as.character(sub_DS3[,2]), as.character(sub_DS4[,2]), 
                as.character(sub_DS5[,2]))  
-DS_actors_left <- c(rep("Present", length(sub_DS1[,2])), rep("Present", length(sub_DS2[,2])),
-                        rep("present", length(sub_DS3[,2])), as.character(sub_DS4[,3]), 
+## 2016 used for people still on the show to represent date range
+DS_actors_yearleft <- c(rep(2016, length(sub_DS1[,2])), rep(2016, length(sub_DS2[,2])),
+                        rep(2016, length(sub_DS3[,2])), as.character(sub_DS4[,3]), 
                         as.character(sub_DS5[,3]))  
-        
+
+df_DS <- data.frame(Actor = DS_actors, Show = rep("Daily Show", length(DS_actors)), YearJoin = DS_actors_yearjoin, YearLeft = DS_actors_yearleft)
+## removes people yet ot join show
+df_DS <- df_DS[df_DS$YearJoin != "TBA", ]
+
+## one just year, need to develop work around (== *,*)
+df_DS$YearJoin <- as.Date(df_DS$YearJoin, "%B %d, %Y")
+df_DS$YearJoin <- format(df_DS$YearJoin, "%Y")
+ 
+ 
+## Need to clean up 
+                          
 ## second pull in movies and tv shows that the actor has appeared in from IMDB
 ## use this first one to call a search then use id of first name to 
 ## call the actor (id starts with nm) 
