@@ -15,11 +15,11 @@ SNL_actors_years <- as.character(sub_SNL[,2])
 StartYear <- data.frame(NULL)
 LastYear <- data.frame(NULL)
 
-For (i in 1:length(SNL_actors_years) {
+for(i in 1:length(SNL_actors_years) {
 StartYear[i] <- substr(SNL_actors_years[i], 1, 4)
 }
 
-For(i in 1:length(SNL_actors_years) {
+for(i in 1:length(SNL_actors_years) {
 LastYear[i] <- substr(SNL_actors_years[i], nchar(SNL_actors_years[i])-3,  nchar(SNL_actors_years[i]))
 }
 
