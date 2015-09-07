@@ -15,15 +15,22 @@ SNL_actors_years <- as.character(sub_SNL[,2])
 StartYear <- data.frame(NULL)
 LastYear <- data.frame(NULL)
 
+count <- 0
 for(i in 1:length(SNL_actors_years) {
-StartYear[i] <- substr(SNL_actors_years[i], 1, 4)
-}
+  n <- nchar(SNL_actors[i])/9
+  rows <- i+n-1
+  
+  for(a in 1:n){
+  count <- count +1
+  actors[count] <- SNL_actors[i]
+  
+  StartYear[count] <- substr(SNL_actors_years[i], 1 + (a-1)*9, 4+(a-1)*9)
 
-for(i in 1:length(SNL_actors_years) {
-LastYear[i] <- substr(SNL_actors_years[i], nchar(SNL_actors_years[i])-3,  nchar(SNL_actors_years[i]))
-}
+LastYear[count] <- substr(SNL_actors_years[i], 6 +(a-1)*9, 9 +(a-1)*9)
+  }
 
-df_SNL <- data.frame(Actor = SNL_actors, Show = rep("SNL", length(snl_actors)), 
+
+df_SNL <- data.frame(Actor = actors, Show = rep("SNL", length(snl_actors)), 
                      BegYear = StartYear , EndYear = LastYear)
 
 
@@ -51,11 +58,15 @@ df_DS <- data.frame(Actor = DS_actors, Show = rep("Daily Show", length(DS_actors
 ## removes people yet to join show
 df_DS <- df_DS[df_DS$YearJoin != "TBA", ]
 
-## one just year, need to develop work around (== *,*)
-For (a in 1:nrow(df_DS$YearJoin){
-If (nchar(df_DS$YearJoin[a] != 4) {
-df_DS$YearJoin <- as.Date(df_DS$YearJoin, "%B %d, %Y")
-df_DS$YearJoin <- format(df_DS$YearJoin, "%Y")
+## one just year,so work around
+for (a in 1:nrow(df_DS$YearJoin){
+if (nchar(df_DS$YearJoin[a] != 4) {
+df_DS$YearJoin[a] <- as.Date(df_DS$YearJoin[a], "%B %d, %Y")
+df_DS$YearJoin[a] <- format(df_DS$YearJoin[a], "%Y")
+}
+
+else { df_DS$YearJoin[a] <- format(df_DS$YearJoin[a], "%Y")
+}
 }
  
 Actor_df <- rbind(df_SNL, df_DS)
@@ -66,11 +77,12 @@ Actor_df <- rbind(df_SNL, df_DS)
 ## call the actor (id starts with nm) 
 
 ## need to create for loop here:
-for(a in 1: nrow(Actor_df)) {
+movie_df <- data.frame(NULL)
+temp <- Actor_df[Actor_df$Actor == 
+    for(a in 1: nrow(Actor_df)) {
 split_name <- strsplit(Actor_df$Actor[a], " ")
 first_name <- split_name[[1]][1]
 last_name <- split_name[[1]][2]
-
 imdb <- "http://www.imdb.com/xml/find?json=1&nr=1&nm=on&q="
 actor_searchURL <- paste(imdb, first_name, "+", last_name, sep ="")
 result_search <- getURL(actor_searchURL)
@@ -91,8 +103,16 @@ actor_page <- getURL(actor_URL)
 ## third pull in Rotten tomatoe review (people not critics) for each movie. 
 
 
-## prepare this as name of actor, SNL or DS, name of movie/tv show, rating
+
+## prepare cleaner data set with actor, mean of ratings, meadian of ratings, sd of ratings, and max 
+
+for (d in 1:length(Actor_df$Actor)) {
+Actor_df[d, 5] <- mean(Movie_df$Score[Movie_df$Actor == Actor_df$Actor[d],]
+Actor_df[d,6] <- median(Movie_df$Score[Movie_df$Actor == Actor_df$Actor[d],]
+Actor_df[d,7] <- max(Movie_df$Score[Movie_df$Actor == Actor_df$Actor[d],]
+Actor_df[d,8] <- sd(Movie_df$Score[Movie_df$Actor == Actor_df$Actor[d],]
+}
+
+names(Actor_df) <- c("Actor", "BegYear", "EndYear", "Show", "Mean", "Med", "Max", "SD")
 
 
-## prepare cleaner data set with actor, mean of ratins, meadian of ratings, sd of ratins, and max 
-## this data set will be used do analysis 
