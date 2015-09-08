@@ -98,27 +98,26 @@ Actor_df <- rbind(df_SNL, df_DS)
 
 ## need to create for loop here:
 movie_df <- data.frame(NULL)
-temp <- Actor_df[Actor_df$Actor == 
-    for(a in 1: nrow(Actor_df)) {
+## to remove duplicate actor names temp <- Actor_df[Actor_df$Actor == 
+   
+for(a in 1: nrow(Actor_df)) {
 split_name <- strsplit(Actor_df$Actor[a], " ")
 first_name <- split_name[[1]][1]
 last_name <- split_name[[1]][2]
 imdb <- "http://www.imdb.com/xml/find?json=1&nr=1&nm=on&q="
 actor_searchURL <- paste(imdb, first_name, "+", last_name, sep ="")
 result_search <- getURL(actor_searchURL)
-
-## need ot figure otu how to pull first id (nm... and remvoe backspace)
-id <- 
+results <- fromJSON(result_search)
+id <- results[[1]][1]
 
 result_begURL <- "http://www.imdb.com/name/"
 result_endURL <- "/?ref_=fn_al_nm_1"
 
 actor_URL <- paste (result_begURL, id, result_endURL, sep = "")
-actor_page <- getURL(actor_URL)
+actor_page <- readLines(actor_URL)
 
 }
-## json call http://www.imdb.com/xml/find?json=1&nr=1&nm=on&q=jeniffer+garner
-##xml call http://www.imdb.com/xml/find?xml=1&nr=1&tt=on&q=lost
+
 
 ## third pull in Rotten tomatoe review (people not critics) for each movie. 
 
@@ -127,10 +126,10 @@ actor_page <- getURL(actor_URL)
 ## prepare cleaner data set with actor, mean of ratings, meadian of ratings, sd of ratings, and max 
 
 for (d in 1:length(Actor_df$Actor)) {
-Actor_df[d, 5] <- mean(Movie_df$Score[Movie_df$Actor == Actor_df$Actor[d],]
-Actor_df[d,6] <- median(Movie_df$Score[Movie_df$Actor == Actor_df$Actor[d],]
-Actor_df[d,7] <- max(Movie_df$Score[Movie_df$Actor == Actor_df$Actor[d],]
-Actor_df[d,8] <- sd(Movie_df$Score[Movie_df$Actor == Actor_df$Actor[d],]
+Actor_df[d, 5] <- mean(Movie_df$Score[Movie_df$Actor == Actor_df$Actor[d],])
+Actor_df[d,6] <- median(Movie_df$Score[Movie_df$Actor == Actor_df$Actor[d],])
+Actor_df[d,7] <- max(Movie_df$Score[Movie_df$Actor == Actor_df$Actor[d],])
+Actor_df[d,8] <- sd(Movie_df$Score[Movie_df$Actor == Actor_df$Actor[d],])
 }
 
 names(Actor_df) <- c("Actor", "BegYear", "EndYear", "Show", "Mean", "Med", "Max", "SD")
