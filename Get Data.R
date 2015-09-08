@@ -2,6 +2,7 @@
 library(RCurl)
 library(jsonlite)
 library(xml2)
+library(XML)
 
 ## first pull in list of SNL alumni and Daily show alumni, wikepedia
 
@@ -90,7 +91,7 @@ df_DS$EndYear <- as.numeric(df_DS$EndYear)
 
 
 Actor_df <- rbind(df_SNL, df_DS)
-
+Actor_df$Actor <- as.character(Actor_df$Actor) 
                           
 ## second pull in movies and tv shows that the actor has appeared in from IMDB
 ## use this first one to call a search then use id of first name to 
@@ -108,7 +109,7 @@ imdb <- "http://www.imdb.com/xml/find?json=1&nr=1&nm=on&q="
 actor_searchURL <- paste(imdb, first_name, "+", last_name, sep ="")
 result_search <- getURL(actor_searchURL)
 results <- fromJSON(result_search)
-id <- results[[1]][1]
+id <- results[[1]][1,1]
 
 result_begURL <- "http://www.imdb.com/name/"
 result_endURL <- "/?ref_=fn_al_nm_1"
@@ -116,6 +117,8 @@ result_endURL <- "/?ref_=fn_al_nm_1"
 actor_URL <- paste (result_begURL, id, result_endURL, sep = "")
 actor_page <- readLines(actor_URL)
 r <- grepl("</a></b>", actor_page)
+if (length(r[r == "TRUE"]) == 0){next}
+    
 sub <- actor_page[r]
 movie_list <- substr(sub, 2, nchar(sub)-8)
 for (z in 1:length(movie_list)) {
@@ -125,10 +128,17 @@ for (z in 1:length(movie_list)) {
 }
 }
 
+movie_df[,1] <- as.factor(movie_df[,1])
 
 ## third pull in Rotten tomatoe review (people not critics) for each movie. 
+for (i in 1:nrow(movie_df)){
+rt <- "http://www.rottentomatoes.com/m/"
+search <- gsub(" ", "_", movie_df[i, 2])
+movie_searchURL <- paste(rt, search, sep ="")
+result_search <- readLines(movie_searchURL)
 
 
+}
 
 ## prepare cleaner data set with actor, mean of ratings, meadian of ratings, sd of ratings, and max 
 
