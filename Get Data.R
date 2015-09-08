@@ -1,7 +1,7 @@
 ## Getting and Cleaning Data Algorithm
 library(RCurl)
 library(jsonlite)
-library(XML)
+library(xml2)
 
 ## first pull in list of SNL alumni and Daily show alumni, wikepedia
 
@@ -99,7 +99,7 @@ Actor_df <- rbind(df_SNL, df_DS)
 ## need to create for loop here:
 movie_df <- data.frame(NULL)
 ## to remove duplicate actor names temp <- Actor_df[Actor_df$Actor == 
-   
+count <- 0   
 for(a in 1: nrow(Actor_df)) {
 split_name <- strsplit(Actor_df$Actor[a], " ")
 first_name <- split_name[[1]][1]
@@ -115,7 +115,14 @@ result_endURL <- "/?ref_=fn_al_nm_1"
 
 actor_URL <- paste (result_begURL, id, result_endURL, sep = "")
 actor_page <- readLines(actor_URL)
-
+r <- grepl("</a></b>", actor_page)
+sub <- actor_page[r]
+movie_list <- substr(sub, 2, nchar(sub)-8)
+for (z in 1:length(movie_list)) {
+    count <- count +1
+    movie_df[count, 1] <- Actor_df$Actor[a]
+    movie_df[count, 2] <- movie_list[z]
+}
 }
 
 
