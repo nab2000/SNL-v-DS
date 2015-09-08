@@ -12,12 +12,15 @@ sub_SNL <- tab_SNL[[2]]
 SNL_actors <- as.character(sub_SNL[,1])
 ## modifying year formats, may need for loop for 
 SNL_actors_years <- as.character(sub_SNL[,2])
-StartYear <- data.frame(NULL)
-LastYear <- data.frame(NULL)
 
+actors <- character()
+StartYear <- character()
+LastYear <- character()
 count <- 0
-for(i in 1:length(SNL_actors_years) {
-  n <- nchar(SNL_actors[i])/9
+for(i in 1:length(SNL_actors_years)) {
+  n <- nchar(SNL_actors_years[i])/9
+  if (n < 1) {n <- ceiling(n)}
+  else if (n <2 & 2>1) {n <- floor(n)}
   rows <- i+n-1
   
   for(a in 1:n){
@@ -28,12 +31,19 @@ for(i in 1:length(SNL_actors_years) {
 
 LastYear[count] <- substr(SNL_actors_years[i], 6 +(a-1)*9, 9 +(a-1)*9)
   }
+}
 
+df_SNL <- data.frame(Actor = actors, Show = rep("SNL", length(actors)), 
+                     BegYear = StartYear , EndYear = LastYear, stringsAsFactors = F)
 
-df_SNL <- data.frame(Actor = actors, Show = rep("SNL", length(snl_actors)), 
-                     BegYear = StartYear , EndYear = LastYear)
-
-
+for (i in 1:nrow(df_SNL)){
+        if (df_SNL$EndYear[i] == "") {df_SNL$EndYear[i] <- df_SNL$BegYear[i]}
+        else if (df_SNL$EndYear[i] == "pres") {df_SNL$EndYear[i] <- 2016}
+}
+df_SNL$Actor <- as.factor(df_SNL$Actor)
+df_SNL$Show <- as.factor(df_SNL$Show)
+df_SNL$BegYear <- as.numeric(df_SNL$BegYear)
+df_SNL$EndYear <- as.numeric(df_SNL$EndYear)
 
 DSurl <- "https://en.wikipedia.org/wiki/List_of_The_Daily_Show_correspondents"
 tabs_DS <- getURL(DSurl)
@@ -54,21 +64,31 @@ DS_actors_yearleft <- c(rep(2016, length(sub_DS1[,2])), rep(2016, length(sub_DS2
                         rep(2016, length(sub_DS3[,2])), as.character(sub_DS4[,3]), 
                         as.character(sub_DS5[,3]))  
 
+
 df_DS <- data.frame(Actor = DS_actors, Show = rep("Daily Show", length(DS_actors)), BegYear = DS_actors_yearjoin, EndYear = DS_actors_yearleft)
 ## removes people yet to join show
-df_DS <- df_DS[df_DS$YearJoin != "TBA", ]
+df_DS <- df_DS[df_DS$BegYear != "TBA", ]
 
+df_DS$BegYear <- as.character(df_DS$BegYear)
+df_DS$EndYear <- as.character(df_DS$EndYear)
 ## one just year,so work around
-for (a in 1:nrow(df_DS$YearJoin){
-if (nchar(df_DS$YearJoin[a] != 4) {
-df_DS$YearJoin[a] <- as.Date(df_DS$YearJoin[a], "%B %d, %Y")
-df_DS$YearJoin[a] <- format(df_DS$YearJoin[a], "%Y")
+for (a in 1:nrow(df_DS)){
+if (nchar(df_DS$BegYear[a]) != 4) {
+x <- as.Date(df_DS$BegYear[a], "%B %d, %Y")
+df_DS$BegYear[a] <- format(x, "%Y")
+}
 }
 
-else { df_DS$YearJoin[a] <- format(df_DS$YearJoin[a], "%Y")
-}
-}
- 
+for (a in 1:nrow(df_DS)){
+        if (nchar(df_DS$EndYear[a]) != 4) {
+                y<- as.Date(df_DS$EndYear[a], "%B %d, %Y")
+                df_DS$EndYear[a] <- format(y, "%Y")
+        }
+} 
+df_DS$BegYear <- as.numeric(df_DS$BegYear)
+df_DS$EndYear <- as.numeric(df_DS$EndYear)
+
+
 Actor_df <- rbind(df_SNL, df_DS)
 
                           
