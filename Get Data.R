@@ -134,9 +134,12 @@ movie_df[,1] <- as.factor(movie_df[,1])
 for (i in 1:nrow(movie_df)){
 rt <- "http://www.rottentomatoes.com/m/"
 search <- gsub(" ", "_", movie_df[i, 2])
+search <- gsub(":", "", search)
 movie_searchURL <- paste(rt, search, sep ="")
 result_search <- readLines(movie_searchURL)
+sub <- result_search[278]
 
+</span>% 
 
 }
 
