@@ -26,17 +26,16 @@ for (i in 1:nrow(movie_df)){
     result_search <- getURL(movie_searchURL)
     result <- htmlTreeParse(result_search)
     result_root <- xmlRoot(result)
-    ## location x <- xpathApply(result_root, "//body/..//li//span//a") $body$div$div$div$h2$ul$li$span$a
     result_list <- xmlToList(result_root)
     result_body <- result_list$body
+    ## this next line pulls in the location of the first movie to match the search criteria
     title <- result_body[[14]][[3]][[1]][[3]][[3]][[2]][[6]]
-    
-    ## use href= after you enter movie results
-    
     
     result_search <- readLines(movie_searchURL)
     rt <- "http://www.rottentomatoes.com"
     movie_nameURL <- paste(rt, title[4], sep ="")
+    movie <- readLines(movie_nameURL)
+    
     ## for read lines of movie title sub <- result_search[278]
     ## for finding score for audience
     </span>% 
