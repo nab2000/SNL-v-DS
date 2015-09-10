@@ -3,8 +3,6 @@ add_RTscores <- function(dir = "./", save_name = "Movie_List_RT", load_file = "M
                          load_vector = "movie_df"){
 
 library(RCurl)
-library(jsonlite)
-library(xml2)
 library(XML)
 
 
@@ -27,12 +25,17 @@ for (i in 1:nrow(movie_df)){
     movie_searchURL <- paste(rt, search, sep ="")
     result_search <- getURL(movie_searchURL)
     result <- htmlTreeParse(result_search)
+    result_root <- xmlRoot(result)
+    ## location x <- xpathApply(result_root, "//body/..//li//span//a") $body$div$div$div$h2$ul$li$span$a
+    result_list <- xmlToList(result_root)
+    result_body <- result_list$body
     ## use href= after you enter movie results
+    
     
     result_search <- readLines(movie_searchURL)
     rt <- "http://www.rottentomatoes.com/m/"
-    sub <- result_search[278]
-    
+    ## for read lines of movie title sub <- result_search[278]
+    ## for finding score for audience
     </span>% 
     
 }
