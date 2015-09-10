@@ -23,8 +23,9 @@ if (exists(load_vector)){
     
 
 movie_df <- data.frame(NULL)
-## to remove duplicate actor names temp <- Actor_df[Actor_df$Actor == 
-count <- 0   
+
+Actor_df <- Actor_df[!duplicated(Actor_df$Actor),]
+count <- 0  
 for(a in 1: nrow(Actor_df)) {
     split_name <- strsplit(Actor_df$Actor[a], " ")
     first_name <- split_name[[1]][1]
