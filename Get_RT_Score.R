@@ -1,5 +1,5 @@
 ## Pulls in Rotten tomatoe review (audience not critics) for each movie. 
-add_RTscores <- function(dir = "./", save_name = "Movie_List_RT", load_file = "Movie_List.csv", 
+add_RTscores <- function(dir = "./", save_name = "movie_list_RT", load_file = "Movie_List.csv", 
                          load_vector = "movie_df"){
 
 require(RCurl)
