@@ -54,7 +54,7 @@ for(a in 1: nrow(Actor_df)) {
 }
 
 movie_df[,1] <- as.factor(movie_df[,1])
-
+names(movie_df) <- c("Actor", "Movie")
 save_loc <- paste(dir, file_name, ".csv", sep="")
 write.csv(movie_df, save_loc, row.names = F) 
 movie_df <<- movie_df
