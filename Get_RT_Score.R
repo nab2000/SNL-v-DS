@@ -68,6 +68,7 @@ add_RTscores <- function(dir = "./", save_name = "movie_list_RT", load_file = "M
             if (length(movie_head) < 39) {next}
             if (length(movie_head[[39]]) < 2) {next}
             score <- movie_head[[39]][2] 
+            if (is.na(score_num)) {next}
             score_num <- as.numeric(substr(score, 1,2))
            if (length(grep("liked it" , score)) == 0) {next}
             
