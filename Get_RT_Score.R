@@ -68,8 +68,8 @@ add_RTscores <- function(dir = "./", save_name = "movie_list_RT", load_file = "M
             if (length(movie_head) < 39) {next}
             if (length(movie_head[[39]]) < 2) {next}
             score <- movie_head[[39]][2] 
-            if (is.na(score_num)) {next}
             score_num <- as.numeric(substr(score, 1,2))
+            if (is.na(score_num)) {next}
            if (length(grep("liked it" , score)) == 0) {next}
             
             movie_score_df[i, 1] <- movie_df[i, 1]
@@ -118,7 +118,7 @@ add_RTscores <- function(dir = "./", save_name = "movie_list_RT", load_file = "M
         }
     }
     names(movie_score_df) <- c("Actor", "Category", "Movie", "Audience_Score", "URL")
-    movie_score_df <- movie_score_df[!is.na(movie_score_df$Actor), ]
+    movie_score_df <- movie_score_df[!is.na(movie_score_df$Audience_Score, ]
     movie_score_df$Actor <- as.factor(movie_score_df$Actor)
     movie_score_df$Category <- as.factor(movie_score_df$Category)
     save_loc <- paste(dir, save_name, ".csv", sep = "")
